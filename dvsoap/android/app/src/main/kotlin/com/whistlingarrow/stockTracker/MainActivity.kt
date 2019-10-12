@@ -1,4 +1,4 @@
-package com.example.dvsoap
+package com.whistlingarrow.stockTracker
 
 import android.os.Bundle
 

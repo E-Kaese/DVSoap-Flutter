@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "699302150733",
+    "firebase_url": "https://dvsoap.firebaseio.com",
+    "project_id": "dvsoap",
+    "storage_bucket": "dvsoap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699302150733:android:75ff6e94a60cf52507d204",
+        "android_client_info": {
+          "package_name": "com.whistlingarrow.stockTracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "699302150733-h9clh6gh3uudssg4q4oos3s3n2bvcv1j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRe6hFSDkiolP_WStVT-wae0aKsJXXebM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "699302150733-6vm8r6oelm0fg8pc4sf02jp1l252jigg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
