@@ -1,4 +1,6 @@
+import 'package:dvsoap/screens/addOrUpdateCategory.dart';
 import 'package:dvsoap/screens/addOrUpdateStock.dart';
+import 'package:dvsoap/screens/manageCategories.dart';
 import 'package:dvsoap/service/snackBarService.dart';
 import 'package:dvsoap/theme/colours.dart';
 import 'package:dvsoap/widgets/views/stockManageView.dart';
@@ -89,12 +91,10 @@ class _HomeState extends State<Home> {
               _menuItem(
                 Icons.category,
                 'Manage Categories',
-                // onTap: () => Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (b) => AddOrUpdateStock(null, false, _snackBarService)),
-                // ).then((b) {
-                //   SystemChrome.setEnabledSystemUIOverlays([]);
-                // }),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (b) => ManageCategories()),
+                ),
               ),
             ],
           ),
@@ -107,14 +107,12 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          SystemChrome.setEnabledSystemUIOverlays([]);
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (b) =>
                     AddOrUpdateStock(null, false, _snackbarService)),
           ).then((b) {
-            SystemChrome.setEnabledSystemUIOverlays([]);
           });
         },
       ),

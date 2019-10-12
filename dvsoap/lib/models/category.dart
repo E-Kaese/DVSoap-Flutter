@@ -2,18 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Category {
   static final CollectionReference collection =
-      Firestore.instance.collection('category');
+      Firestore.instance.collection('categories');
 
   final String id;
   final bool isActive;
   final bool isVisible;
   final String name;
+  final String description;
 
   Category(
       {this.id,
       this.isActive,
       this.isVisible,
-      this.name,});
+      this.name,
+      this.description});
 
   @override
   bool operator ==(covariant Category other) => other.hashCode == hashCode;
@@ -27,6 +29,7 @@ class Category {
       isActive: snapshot.data['IsActive'],
       isVisible: snapshot.data['IsVisible'],
       name: snapshot.data['Name'],
+      description: snapshot.data['Description'],
     );
   }
 
@@ -35,6 +38,7 @@ class Category {
       'IsActive': isActive,
       'IsVisible': isVisible,
       'Name': name,
+      'Description': description,
     };
   }
 }

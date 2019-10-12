@@ -4,6 +4,7 @@ import 'package:dvsoap/abstract/loadingAbstractState.dart';
 import 'package:dvsoap/models/category.dart';
 import 'package:dvsoap/models/stock.dart';
 import 'package:dvsoap/screens/addOrUpdateStock.dart';
+import 'package:dvsoap/service/dialogService.dart';
 import 'package:dvsoap/service/snackBarService.dart';
 import 'package:dvsoap/theme/colours.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class StockManageView extends StatefulWidget {
 class _StockManageViewState extends LoadingAbstractState<StockManageView> {
   final TextEditingController _searchController = TextEditingController();
   final List<Stock> _stock = [];
+  final List<Category> _categories = [];
   Category category;
   StreamSubscription<QuerySnapshot> _sub;
   SnackBarService _snackbarService;
@@ -46,7 +48,7 @@ class _StockManageViewState extends LoadingAbstractState<StockManageView> {
         .collection('stock')
         .where('IsActive', isEqualTo: true)
         .snapshots()
-        .listen((onData) {
+        .listen((onData) async {
       onData.documentChanges.forEach((f) {
         Stock stock = Stock.fromSnapshot(f.document);
         switch (f.type) {
@@ -62,9 +64,18 @@ class _StockManageViewState extends LoadingAbstractState<StockManageView> {
             break;
         }
       });
+      _stock.sort((a, b) => a.name.compareTo(b.name));
+      var categories = [];
+      for (Stock s in _stock) {
+        categories.add(Category.fromSnapshot(await s.category.get()));
+      }
 
       if (mounted) {
         setState(() {
+          _categories.clear();
+          categories.forEach((c) {
+            _categories.add(c);
+          });
           isLoading = false;
         });
       }
@@ -82,14 +93,31 @@ class _StockManageViewState extends LoadingAbstractState<StockManageView> {
     return _stock;
   }
 
-  Widget _buildItemList(Stock item) {
+  Future<void> _removeStock(Stock stock) async {
+    bool result = await DialogService.instance.showConfirmation(
+        context, 'Are you sure you want to remove ${stock.name}?');
+
+    if (result) {
+      await Firestore.instance
+          .collection('stock')
+          .document(stock.id)
+          .updateData({'IsActive': false});
+      _snackbarService.showSnackBar('Successfully removed ${stock.name}');
+    }
+  }
+
+  Widget _buildItemList(Stock item, int index) {
     var controller = TextEditingController(text: item.amount.toString());
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 15),
       title: Text(
         item.name,
       ),
-      subtitle: Text(item.category.documentID),
+      subtitle: Text(
+        ((_categories.length > 0)
+            ? '${_categories.elementAt(index).name}'
+            : ''),
+      ),
       trailing: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -181,8 +209,15 @@ class _StockManageViewState extends LoadingAbstractState<StockManageView> {
           ),
         ],
       ),
+      onLongPress: () {
+        _removeStock(item);
+      },
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (b) => AddOrUpdateStock(item, true, _snackbarService)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (b) =>
+                    AddOrUpdateStock(item, true, _snackbarService)));
       },
     );
   }
@@ -228,7 +263,7 @@ class _StockManageViewState extends LoadingAbstractState<StockManageView> {
                 ),
                 itemCount: snapshot.data.length,
                 itemBuilder: (context, index) =>
-                    _buildItemList(snapshot.data.elementAt(index)),
+                    _buildItemList(snapshot.data.elementAt(index), index),
               ),
             ),
           ),

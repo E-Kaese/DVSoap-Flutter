@@ -26,12 +26,17 @@ class AddOrUpdateStock extends StatefulWidget {
 
 class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
   final _formKey = GlobalKey<FormState>();
+  FocusNode descriptionFocus = FocusNode();
+  FocusNode weightFocus = FocusNode();
+  FocusNode amountFocus = FocusNode();
+  FocusNode costFocus = FocusNode();
+  FocusNode priceFocus = FocusNode();
   String name;
-  double weight;
   String description;
+  double weight;
+  int amount;
   double cost;
   double price;
-  int amount;
   bool isVisible;
 
   Category selectedCategory;
@@ -54,14 +59,13 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
       isVisible = widget.stock.isVisible;
       weight = widget.stock.weight;
     } else {
-      isVisible = true;
+      isVisible = false;
     }
     _loadData();
   }
 
   @override
   void dispose() {
-    _categoriesSub.cancel();
     _categoriesSub.cancel();
     super.dispose();
   }
@@ -247,8 +251,8 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
                 }
                 return null;
               },
-              // onEditingComplete: () =>
-              //     FocusScope.of(context).requestFocus(_ageFocusNode),
+              onEditingComplete: () =>
+                  FocusScope.of(context).requestFocus(descriptionFocus),
               style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 labelText: 'Name',
@@ -264,9 +268,10 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
                 });
               },
               keyboardType: TextInputType.text,
-              // focusNode: _ageFocusNode,
-              // onEditingComplete: () =>
-              //     FocusScope.of(context).requestFocus(_ageFocusNode),
+              textInputAction: TextInputAction.go,
+              focusNode: descriptionFocus,
+              onEditingComplete: () =>
+                  FocusScope.of(context).requestFocus(weightFocus),
               autocorrect: true,
               validator: (value) {
                 if (value.isEmpty) {
@@ -311,9 +316,10 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
                 });
               },
               keyboardType: TextInputType.number,
-              // focusNode: _ageFocusNode,
-              // onEditingComplete: () =>
-              //     FocusScope.of(context).requestFocus(_ageFocusNode),
+              textInputAction: TextInputAction.go,
+              focusNode: weightFocus,
+              onEditingComplete: () =>
+                  FocusScope.of(context).requestFocus(amountFocus),
               autocorrect: true,
               validator: (value) {
                 if (value.isEmpty) {
@@ -336,9 +342,10 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
                 });
               },
               keyboardType: TextInputType.number,
-              // focusNode: _ageFocusNode,
-              // onEditingComplete: () =>
-              //     FocusScope.of(context).requestFocus(_ageFocusNode),
+              textInputAction: TextInputAction.go,
+              focusNode: amountFocus,
+              onEditingComplete: () =>
+                  FocusScope.of(context).requestFocus(costFocus),
               autocorrect: true,
               validator: (value) {
                 if (value.isEmpty) {
@@ -361,9 +368,10 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
                 });
               },
               keyboardType: TextInputType.number,
-              // focusNode: _ageFocusNode,
-              // onEditingComplete: () =>
-              //     FocusScope.of(context).requestFocus(_ageFocusNode),
+              textInputAction: TextInputAction.go,
+              focusNode: costFocus,
+              onEditingComplete: () =>
+                  FocusScope.of(context).requestFocus(priceFocus),
               autocorrect: true,
               validator: (value) {
                 if (value.isEmpty) {
@@ -386,9 +394,8 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
                 });
               },
               keyboardType: TextInputType.number,
-              // focusNode: _ageFocusNode,
-              // onEditingComplete: () =>
-              //     FocusScope.of(context).requestFocus(_ageFocusNode),
+              textInputAction: TextInputAction.done,
+              focusNode: priceFocus,
               autocorrect: true,
               validator: (value) {
                 if (value.isEmpty) {
@@ -419,10 +426,10 @@ class _AddOrUpdateStockState extends LoadingAbstractState<AddOrUpdateStock> {
                   Container(
                     alignment: Alignment.centerRight,
                     child: Checkbox(
-                      value: !isVisible,
+                      value: isVisible,
                       onChanged: (s) {
                         setState(() {
-                          isVisible = !s;
+                          isVisible = s;
                         });
                       },
                       checkColor: DarkPurple,
