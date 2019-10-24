@@ -7,8 +7,8 @@ class DialogService {
   const DialogService();
 
   Future<bool> showConfirmation(BuildContext context, String message,
-      {String title = "CONFIRM",
-      String yesText = "YES",
+      {String title = "Confirm",
+      String yesText = "Yes",
       String noText = "No"}) {
     return showDialog<bool>(
       context: context,
@@ -33,15 +33,6 @@ class DialogService {
               ),
               ButtonBar(
                 children: <Widget>[
-                  FlatButton(
-                    shape: RoundedRectangleBorder(),
-                    color: DarkPurple,
-                    child: Text(yesText,
-                        style: const TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    },
-                  ),
                   OutlineButton(
                     shape: RoundedRectangleBorder(),
                     color: DarkPurple,
@@ -52,7 +43,16 @@ class DialogService {
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
-                  )
+                  ),
+                  FlatButton(
+                    shape: RoundedRectangleBorder(),
+                    color: DarkPurple,
+                    child: Text(yesText,
+                        style: const TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
+                  ),
                 ],
               )
             ],

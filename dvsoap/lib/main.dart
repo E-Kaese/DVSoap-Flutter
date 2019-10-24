@@ -1,11 +1,9 @@
-import 'package:dvsoap/screens/addOrUpdateCategory.dart';
 import 'package:dvsoap/screens/addOrUpdateStock.dart';
 import 'package:dvsoap/screens/manageCategories.dart';
 import 'package:dvsoap/service/snackBarService.dart';
 import 'package:dvsoap/theme/colours.dart';
 import 'package:dvsoap/widgets/views/stockManageView.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
