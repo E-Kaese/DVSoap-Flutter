@@ -33,22 +33,22 @@ class DialogService {
               ),
               ButtonBar(
                 children: <Widget>[
+                  FlatButton(
+                    shape: RoundedRectangleBorder(),
+                    color: DarkPurple,
+                    child: Text(noText,
+                        style: const TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                  ),
                   OutlineButton(
                     shape: RoundedRectangleBorder(),
                     color: DarkPurple,
                     borderSide: BorderSide(color: DarkPurple),
                     highlightedBorderColor: DarkPurple,
                     textColor: DarkPurple,
-                    child: Text(noText),
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                    },
-                  ),
-                  FlatButton(
-                    shape: RoundedRectangleBorder(),
-                    color: DarkPurple,
-                    child: Text(yesText,
-                        style: const TextStyle(color: Colors.white)),
+                    child: Text(yesText),
                     onPressed: () {
                       Navigator.pop(context, true);
                     },

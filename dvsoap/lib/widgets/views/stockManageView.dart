@@ -145,31 +145,19 @@ class _StockManageViewState extends LoadingAbstractState<StockManageView> {
           ),
           SizedBox(
             width: 40,
-            child: TextField(
+            child: TextFormField(
               decoration: InputDecoration(
                 border: InputBorder.none,
                 isDense: true,
               ),
               controller: controller,
               keyboardType: TextInputType.number,
-              onChanged: (v) async {
+              onFieldSubmitted: (v) async {
+                FocusScope.of(context).requestFocus(new FocusNode());
                 setState(() {
                   item.amount = int.parse(v);
                   controller.text = item.amount.toString();
                 });
-                try {
-                  await Firestore.instance
-                      .collection('stock')
-                      .document(item.id)
-                      .setData({'Amount': item.amount}, merge: true);
-                  _snackbarService
-                      .showSnackBar('Updated ${item.name} successfully');
-                } catch (e) {
-                  _snackbarService
-                      .showSnackBar('Error occured updating ${item.name}: $e');
-                }
-              },
-              onEditingComplete: () async {
                 try {
                   await Firestore.instance
                       .collection('stock')

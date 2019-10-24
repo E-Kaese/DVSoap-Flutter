@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'package:dvsoap/abstract/loadingAbstractState.dart';
-import 'package:dvsoap/models/category.dart';
+import 'package:dvsoap/models/client.dart';
+import 'package:dvsoap/screens/addOrUpdateClient.dart';
 import 'package:dvsoap/service/dialogService.dart';
 import 'package:dvsoap/service/snackBarService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'addOrUpdateCategory.dart';
 
-class ManageCategories extends StatefulWidget {
+class ManageClients extends StatefulWidget {
   @override
-  _ManageCategoriesState createState() => _ManageCategoriesState();
+  _ManageClientsState createState() => _ManageClientsState();
 }
 
-class _ManageCategoriesState extends LoadingAbstractState<ManageCategories> {
+class _ManageClientsState extends LoadingAbstractState<ManageClients> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   SnackBarService snackbarService;
   final TextEditingController _searchController = TextEditingController();
-  List<Category> _categories = [];
+  List<Client> _clients = [];
   StreamSubscription<QuerySnapshot> _sub;
 
   @override
@@ -39,22 +39,22 @@ class _ManageCategoriesState extends LoadingAbstractState<ManageCategories> {
 
   Future<void> _loadData() async {
     _sub = Firestore.instance
-        .collection('categories')
+        .collection('clients')
         .where('IsActive', isEqualTo: true)
         .snapshots()
         .listen((onData) {
       onData.documentChanges.forEach((f) {
-        Category category = Category.fromSnapshot(f.document);
+        Client client = Client.fromSnapshot(f.document);
         switch (f.type) {
           case DocumentChangeType.added:
-            _categories.add(category);
+            _clients.add(client);
             break;
           case DocumentChangeType.modified:
-            int index = _categories.indexOf(category);
-            _categories.replaceRange(index, index + 1, [category]);
+            int index = _clients.indexOf(client);
+            _clients.replaceRange(index, index + 1, [client]);
             break;
           case DocumentChangeType.removed:
-            _categories.remove(category);
+            _clients.remove(client);
             break;
         }
       });
@@ -67,56 +67,58 @@ class _ManageCategoriesState extends LoadingAbstractState<ManageCategories> {
     }
   }
 
-  Future<Iterable<Category>> _getCategories() async {
+  Future<Iterable<Client>> _getClients() async {
     if (_searchController.text.isNotEmpty) {
-      return _categories
-          .where((Category category) => category.name
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()))
+      return _clients
+          .where((Client client) =>
+              ('${client.contactPerson} ${client.organisation}')
+                  .toLowerCase()
+                  .contains(_searchController.text.toLowerCase()))
           .toList();
     }
 
-    _categories.sort((a, b) => a.name.compareTo(b.name));
-    return _categories;
+    _clients.sort((a, b) => a.contactPerson.compareTo(b.contactPerson));
+    return _clients;
   }
 
-  Future<void> _removeCategory(Category category) async {
-    bool result = await DialogService.instance.showConfirmation(
-        context, 'Are you sure you want to remove ${category.name}?');
+  Future<void> _removeClient(Client client) async {
+    bool result = await DialogService.instance.showConfirmation(context,
+        'Are you sure you want to remove ${client.contactPerson}(${client.organisation})?');
 
     if (result) {
       setState(() {
         isLoading = true;
       });
       await Firestore.instance
-          .collection('categories')
-          .document(category.id)
+          .collection('clients')
+          .document(client.id)
           .setData({'IsActive': false}, merge: true);
-      _categories.clear();
+      _clients.clear();
       _loadData();
-      snackbarService.showSnackBar('Successfully removed ${category.name}');
+      snackbarService.showSnackBar(
+          'Successfully removed ${client.contactPerson}(${client.organisation})');
     }
   }
 
-  Widget _buildItemList(Category category) {
+  Widget _buildItemList(Client client) {
     return ListTile(
       dense: true,
       contentPadding: EdgeInsets.symmetric(horizontal: 15),
       title: Text(
-        category.name,
+        client.contactPerson,
       ),
+      subtitle: Text(client.organisation),
       trailing: IconButton(
         icon: Icon(Icons.delete),
         onPressed: () {
-          _removeCategory(category);
+          _removeClient(client);
         },
       ),
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (b) =>
-                  AddOrUpdateCategory(category, true, snackbarService)),
+              builder: (b) => AddOrUpdateClient(client, true, snackbarService)),
         );
       },
     );
@@ -128,7 +130,7 @@ class _ManageCategoriesState extends LoadingAbstractState<ManageCategories> {
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Categories'),
+        title: Text('Clients'),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
@@ -137,7 +139,7 @@ class _ManageCategoriesState extends LoadingAbstractState<ManageCategories> {
             context,
             MaterialPageRoute(
                 builder: (b) =>
-                    AddOrUpdateCategory(null, false, snackbarService)),
+                    AddOrUpdateClient(null, false, snackbarService)),
           ).then((b) {});
         },
       ),
@@ -168,9 +170,9 @@ class _ManageCategoriesState extends LoadingAbstractState<ManageCategories> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<Iterable<Category>>(
-              initialData: _categories,
-              future: _getCategories(),
+            child: FutureBuilder<Iterable<Client>>(
+              initialData: _clients,
+              future: _getClients(),
               builder: (buildContext, snapshot) => ListView.separated(
                 separatorBuilder: (separatorContext, index) => Container(
                   height: 1,
