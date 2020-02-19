@@ -1,6 +1,7 @@
 import 'package:dvsoap/screens/addOrUpdateStock.dart';
 import 'package:dvsoap/screens/manageCategories.dart';
 import 'package:dvsoap/screens/manageClients.dart';
+import 'package:dvsoap/screens/manageOrders.dart';
 import 'package:dvsoap/service/snackBarService.dart';
 import 'package:dvsoap/theme/colours.dart';
 import 'package:dvsoap/widgets/views/stockManageView.dart';
@@ -100,7 +101,7 @@ class _HomeState extends State<Home> {
                 'Orders',
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (b) => ManageCategories()),
+                  MaterialPageRoute(builder: (b) => ManageOrders()),
                 ),
               ),
               _menuItem(
